@@ -1,0 +1,16 @@
+1. Receive file (CSV / XLSX)
+2. Read file
+3. Infer schema
+4. Check if table exists
+   ├─ If NOT → CREATE TABLE
+   ├─ If YES → Compare schema
+       ├─ Missing columns → ALTER TABLE
+       ├─ Same schema → continue
+5. Insert data
+6. Log metadata
+
+
+
+check the normalisation in the columns as bool columns can be mapped to true and false but mixed cannot be inserted
+
+there can be outliers they should be removerd else data cannot be ionserted in trhe db

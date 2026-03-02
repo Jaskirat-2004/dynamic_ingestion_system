@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INGESTION SYS</title>
+    <link rel="stylesheet" href="\static\style.css">
+</head>
+
+<script>
+    // THIS FUNCTION IS USED TO HANDLE THE TABLE SELECTION
+    function handleTableChange() {
+        const select = document.getElementById("table");
+        const newTableDiv = document.getElementById("newTableDiv");
+
+        if (select.value === "__new__") {
+            newTableDiv.style.display = "block";
+        }
+        else {
+            newTableDiv.style.display = "none";
+        }
+    }
+
+</script>
+
+<body>
+
+    <div class="container">
+
+        <h1>UPLOAD PORTAL</h1>
+        <p class="subtitle">Upload file ('csv' or 'xlsx' format only)</p>
+
+        <form action="/uploaded" method="post" enctype="multipart/form-data">
+
+            <div class="form-group">
+                <label for="file">SELECT FILE : </label>
+                <input type="file" id="file" name="file" required>
+            </div>
+
+            <div class="form-group">
+                <label for="table">SELECT TABLE : </label>
+
+                <select id="table" name="table" onchange="handleTableChange()" required>
+                    <option value="">--SELECT--</option>
+
+                    {% for t in tables %}
+                    <option value="{{t}}">{{t}}</option>
+                    {% endfor %}
+
+                    <option value="__new__">--CREATE NEW TABLE--</option>
+
+                </select>
+
+
+            </div>
+
+            <div class="form-group" id="newTableDiv" name="NewtableDiv" style="display:none;">
+                <label for="newTable">TABLE NAME : </label>
+                <input type="text" id="newTable" name="newTable" placeholder="Enter table name">
+            </div>
+
+            <button type="submit">UPLOAD</button>
+
+        </form>
+    </div>
+
+</body>
+
+</html>

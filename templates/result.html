@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RESULT</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>UPLOAD RESULT</h1>
+        
+        {% if error %}
+            <div class=" message error">
+                {{error}}
+            </div>
+        {% else %}
+            <div class="message success">
+                <h3>✅ File Uploaded Successfully</h3>
+                <p><strong>Filename:</strong> {{ filename }}</p>
+                <p><strong>No of rows :</strong> {{ l }}</p>
+                <p><strong>File type:</strong> {{ content_type }}</p>
+                <p><strong>Columns : </strong> {{ cols }}</p>
+            </div>
+        {%endif%}
+
+        <a href="/upload" class="back-link">⬅ Upload Another File</a>
+
+    </div>
+</body>
+</html>
