@@ -21,3 +21,5 @@ def read_file(file,filename:str):
 
     return df  
 
+def load_session_df(session_id: str):
+    return pd.read_pickle(f"temp/{session_id}.pkl")

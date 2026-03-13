@@ -6,7 +6,14 @@ from fastapi.staticfiles import StaticFiles
 
 #############################################################################
 
-from app.ingestion.reading import read_file
+import uuid
+import os
+import json
+import pandas as pd
+
+#############################################################################
+
+from app.ingestion.reading import read_file,load_session_df
 from app.ingestion.infer_schema import column_types
 from app.ingestion.enforce import enforce_types
 
@@ -16,12 +23,15 @@ from app.db.push import push_to_db
 
 #############################################################################
 
+if not os.path.exists("temp"):
+    os.makedirs("temp")
+
 app = FastAPI()
 
-# create jinja instance
+# CREATE JINJA INSTANCE
 templates = Jinja2Templates(directory="templates")
 
-#connect static files like templates directory
+# CONNECT STATIC FILES LIKE TEMPLATES DIRECTORY
 app.mount("/static",StaticFiles(directory="static"),name="static")
 
 # THIS IS ROOT 
@@ -34,7 +44,7 @@ def root():
 @app.get("/upload",response_class=HTMLResponse)
 def show_form(request: Request):
     
-    # Fetching the tables from the database
+    # FETCHING THE TABLES FROM THE DATABASE
     table_query,db_schema = list_tables_query() 
     tables = run_query(table_query,values = db_schema,fetch=True)
     flat_tables = [table[0] for table in tables]
@@ -45,14 +55,14 @@ def show_form(request: Request):
          "tables":flat_tables}
     )
 
-# POST METHOD THAT OPENS WHEN FILE IS UPLODED
-@app.post("/uploaded",response_class=HTMLResponse)
-def show_name(
+
+@app.post("/upload-preview",response_class=HTMLResponse)
+def upload_preview(
     request: Request,
     file: UploadFile = File(...),
     table:str = Form(...),
     newTable:str = Form(None)
-    ) :
+    ):
 
     errors = None
 
@@ -62,44 +72,99 @@ def show_name(
         table_name = table
 
     try:
-        # Reading the file
         df = read_file(file.file,file.filename)
-        
-        # Inferring the schema
         SCHEMA = column_types(df)
 
-        # Creating the table
-        create_table = create_table_query(SCHEMA,table_name)
-        run_query(create_table)
+        # CREATING UNIQUE SESSION ID
+        session_id = str(uuid.uuid4())
 
-        # Enforcing The SCHEMA
-        df = enforce_types(df,SCHEMA)
+        # SAVING DF IN SESSION
+        df.to_pickle(f"temp/{session_id}.pkl")
 
-        # Inserting the data
-        push_to_db(df,table_name)
+        # SAVING SCHEMA TEMPORARILY
+        with open(f"temp/{session_id}_schema.json","w") as f:
+            json.dump(SCHEMA,f)
+        
+        return templates.TemplateResponse(
+            "upload_preview.html",
+            {
+                "request":request,
+                "schema":SCHEMA,
+                "table_name":table_name,
+                "session_id":session_id,
+                "filename": file.filename,
+                "content_type": file.content_type,
+                "error": errors
+            }
+        )
 
     except Exception as e:
         errors = str(e)
 
+        return templates.TemplateResponse(
+            "upload_preview.html",
+            {
+                "request":request,
+                "error": errors
+            }
+        )
+
+@app.post("/confirm-schema")
+async def confirm_schema(request:Request):
+
+    form = await request.form()
+
+    session_id = form.get("session_id")
+    table_name = form.get("table_name")
+    primary_key = form.get("primary_key")
+
+    validated_schema = {}
+
+    for key,value in form.items():
+        if key.startswith("type_"):
+            column = key.replace("type_","")
+            validated_schema[column] = value
+
+    errors = None
+
+    try:
+        # READING THE DF
+        df = load_session_df(session_id)
+
+        # ENFORCING THE SCHEMA
+        df = enforce_types(df,validated_schema)
+        
+        # CREATING THE TABLE
+        create_table = create_table_query(validated_schema,table_name)
+        run_query(create_table)
+
+        # INSERTING THE DATA
+        push_to_db(df,table_name)
+
+    except Exception as e:
+        errors = str(e)
+    
+    # cleanup
+    os.remove(f"temp/{session_id}.pkl")
+    os.remove(f"temp/{session_id}_schema.json")
+
     if errors:
-         return templates.TemplateResponse(
+        return templates.TemplateResponse(
             "result.html",
             {
                 "request":request,
-                "filename": None,
-                "content_type": file.content_type,
                 "error": errors
             }
         )
     
     else:
-
         return templates.TemplateResponse(
             "result.html",
             {
                 "request":request,
-                "filename": file.filename,
-                "content_type": file.content_type,
+                "l": len(df),
+                "cols": list(df.columns),
+                "table_name":table_name,
                 "error": errors
             }
         )

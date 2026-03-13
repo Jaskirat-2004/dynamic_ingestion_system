@@ -25,7 +25,8 @@ def list_tables_query(schema = "public"):
     """
     THIS FUNCTION TAKES A SCHEMA NAME AS INPUT AND RETURNS A LIST OF TABLES IN THAT SCHEMA
     """
-
+    # used parameterized query to prevent sql injection
+    
     query = """
     SELECT table_name
     FROM information_schema.tables
@@ -36,6 +37,19 @@ def list_tables_query(schema = "public"):
 
     return query,values
 
+def list_columns_query(table_name:str):
+    """
+    THIS FUNCTION TAKES A TABLE NAME AS INPUT AND RETURNS A LIST OF COLUMNS IN THAT TABLE
+    """
+
+    query = """
+    SELECT column_name,data_type
+    FROM information_schema.columns
+    WHERE table_name = %s
+    """
+    values = (table_name,)
+
+    return query,values
 
 
 

@@ -1,9 +1,32 @@
-body{
+/* =====================================================
+   GLOBAL STYLES
+===================================================== */
+
+body {
     background-color: #f4f6f8;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    margin: 0;
+    padding: 40px 20px;
 }
 
-.container{
+h1,
+h2,
+h3 {
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+/* =====================================================
+   LAYOUT
+===================================================== */
+
+.container {
     width: 400px;
     margin: 80px auto;
     padding: 30px;
@@ -13,18 +36,26 @@ body{
     text-align: center;
 }
 
-h1,h2,h3 {
-    margin-bottom: 5px;
-    color: #333;
+.container.wide {
+    max-width: 1100px;
+    margin: auto;
+    padding: 0;
+    background: none;
+    box-shadow: none;
 }
 
-.subtitle{
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 25px;
+.card {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
 }
 
-.form-group{
+/* =====================================================
+   FORM ELEMENTS
+===================================================== */
+
+.form-group {
     text-align: left;
     margin-bottom: 20px;
 }
@@ -36,26 +67,115 @@ label {
 }
 
 input[type="text"],
-input[type="file"] {
+input[type="file"],
+select {
     width: 100%;
     padding: 8px;
     box-sizing: border-box;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 14px;
 }
 
-button{
+input[type="radio"] {
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+button {
     width: 100px;
     padding: 10px;
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 4px;
-    font-size: 16px;
+    border-radius: 6px;
+    font-size: 14px;
     cursor: pointer;
+    transition: 0.2s ease;
 }
 
-button:hover{
+button:hover {
     background-color: #0056b3;
 }
+
+.primary-btn {
+    width: auto;
+    padding: 10px 20px;
+    background: #2563eb;
+    font-weight: 600;
+}
+
+.primary-btn:hover {
+    background: #1d4ed8;
+}
+
+.actions {
+    text-align: right;
+    margin-top: 20px;
+}
+
+/* =====================================================
+   TABLE STYLES (Schema Preview)
+===================================================== */
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+thead {
+    background-color: #f9fafb;
+}
+
+th,
+td {
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    font-weight: 600;
+}
+
+tbody tr:hover {
+    background-color: #fafafa;
+}
+
+.col-name {
+    font-weight: 600;
+}
+
+.center {
+    text-align: center;
+}
+
+/* =====================================================
+   BADGES
+===================================================== */
+
+.badge {
+    background: #eef2ff;
+    color: #3730a3;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* =====================================================
+   MESSAGES
+===================================================== */
 
 .message {
     padding: 15px;

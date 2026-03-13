@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Schema Review</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <div class="page">
+
+        <div class="preview-card">
+
+            <div class="preview-header">
+                <div>
+                    <h1>Review Schema</h1>
+                    <p>Confirm column types before inserting into database</p>
+                </div>
+                <div class="table-meta">
+                    <span class="table-name">{{ table_name }}</span>
+                </div>
+            </div>
+
+            <form action="/confirm-schema" method="post">
+
+                <input type="hidden" name="session_id" value="{{ session_id }}">
+                <input type="hidden" name="table_name" value="{{ table_name }}">
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Column</th>
+                                <th>Detected</th>
+                                <th>Type</th>
+                                <th>PK</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for col, dtype in schema.items() %}
+                            <tr>
+                                <td class="col-name">{{ col }}</td>
+
+                                <td>
+                                    <span class="type-badge">{{ dtype }}</span>
+                                </td>
+
+                                <td>
+                                    <select name="type_{{ col }}">
+                                        <option value="BOOLEAN" {% if dtype=="BOOLEAN" %} selected{% endif %}>BOOLEAN
+                                        </option>
+                                        <option value="INTEGER" {% if dtype=="INTEGER" %} selected{% endif %}>INTEGER
+                                        </option>
+                                        <option value="FLOAT" {% if dtype=="FLOAT" %} selected{% endif %}>FLOAT</option>
+                                        <option value="DATE" {% if dtype=="DATE" %} selected{% endif %}>DATE</option>
+                                        <option value="TEXT" {% if dtype=="TEXT" %} selected{% endif %}>TEXT</option>
+                                    </select>
+                                </td>
+
+                                <td class="pk-cell">
+                                    <input type="radio" name="primary_key" value="{{ col }}">
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="footer-actions">
+                    <button type="submit" class="confirm-btn">
+                        Confirm & Insert
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

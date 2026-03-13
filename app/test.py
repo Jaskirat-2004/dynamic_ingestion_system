@@ -1,7 +1,7 @@
 
-from app.ingestion.reading import read_file,infer_schema
+from app.ingestion.reading import read_file
 
-from app.db.sql_query import create_table_query,list_tables
+from app.db.sql_query import create_table_query,list_tables_query
 
 from app.db.query_execution import run_query
 
@@ -48,7 +48,7 @@ df = read_file(r"C:\Users\8242K\Desktop\WFM\Pan India\TL-Wise Attrition\Dumps\he
 
 # run_query(b)
 
-a,b = list_tables()
+a,b = list_tables_query()
 c = run_query(a,b,fetch=True)
 print(c)
 q = """
