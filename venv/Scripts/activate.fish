@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV 'C:\Users\8242K\Desktop\TESTING\dynamic_ingestion_sys\venv'
+set -gx VIRTUAL_ENV 'C:\Users\8242K\Desktop\PROJECTS\dynamic_ingestion_sys\venv'
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"Scripts $PATH
